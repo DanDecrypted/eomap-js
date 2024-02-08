@@ -464,7 +464,21 @@ export class Palette extends PhaserInstance {
         <div style="padding:10px">
           ${Globals.LAYER_NAMES.map((layer, i) => {
             let isVisible = this.layerVisibility.isLayerVisible(i);
+            let disabled = i == 0;
             let icon = isVisible ? VisibilityIcon : VisibilityOffIcon;
+
+            if (disabled) {
+              return html`
+                <sp-action-button
+                  disabled
+                  class="toggle-layer-visibility"
+                  @click=${(e) => this.toggleLayerVisibility(i)}
+                >
+                  <sp-icon slot="icon">${icon()}</sp-icon> ${layer}
+                </sp-action-button>
+              `;
+            }
+
             return html`
               <sp-action-button
                 class="toggle-layer-visibility"
