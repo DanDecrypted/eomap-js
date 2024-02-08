@@ -27,6 +27,13 @@ import { merge } from "../util/object-utils";
 
 import scrollbarStyles from "../styles/scrollbar";
 
+import {
+  VisibilityIcon,
+  VisibilityOffIcon,
+} from "@spectrum-web-components/icons-workflow";
+
+import Globals from "../globals";
+
 @customElement("eomap-palette")
 export class Palette extends PhaserInstance {
   static DEFAULT_WIDTH = 351;
@@ -100,6 +107,13 @@ export class Palette extends PhaserInstance {
         }
         #palette-scroll-container:focus-visible {
           outline: unset;
+        }
+        #palette-layer-visibility {
+          place-self: center;
+          width: 100%;
+        }
+        .toggle-layer-visibility {
+          margin: 2px 0 2px 0;
         }
         .palette-viewport {
           width: 100%;
@@ -215,6 +229,9 @@ export class Palette extends PhaserInstance {
   @query("#palette-content", true)
   paletteContent;
 
+  @property({ type: Array })
+  layerVisibility;
+
   @property({ type: Number })
   selectedLayer;
 
@@ -250,6 +267,9 @@ export class Palette extends PhaserInstance {
 
   @state({ type: Number })
   contentHeight = 0;
+
+  @state({ type: Function })
+  toggleLayerVisibility = null;
 
   @state({ type: Function })
   onPaletteContentScroll = null;
@@ -323,20 +343,7 @@ export class Palette extends PhaserInstance {
   }
 
   renderLayerButtons() {
-    const LAYER_NAMES = [
-      "Ground",
-      "Objects",
-      "Overlay",
-      "Down Wall",
-      "Right Wall",
-      "Roof",
-      "Top",
-      "Shadow",
-      "Overlay 2",
-      "Special",
-    ];
-
-    return LAYER_NAMES.map((label, i) => {
+    return Globals.LAYER_NAMES.map((label, i) => {
       return html`
         <sp-action-button
           value="${i}"
@@ -449,6 +456,24 @@ export class Palette extends PhaserInstance {
           }px">
             ${super.render()}
           </div>
+        </div>
+      </div>
+      <div 
+        id="palette-layer-visibility"
+      >
+        <div style="padding:10px">
+          ${Globals.LAYER_NAMES.map((layer, i) => {
+            let isVisible = this.layerVisibility.isLayerVisible(i);
+            let icon = isVisible ? VisibilityIcon : VisibilityOffIcon;
+            return html`
+              <sp-action-button
+                class="toggle-layer-visibility"
+                @click=${(e) => this.toggleLayerVisibility(i)}
+              >
+                <sp-icon slot="icon">${icon()}</sp-icon> ${layer}
+              </sp-action-button>
+            `;
+          })}
         </div>
       </div>
     `;
@@ -580,6 +605,6 @@ export class Palette extends PhaserInstance {
   }
 
   get componentDataKeys() {
-    return ["gfxLoader", "selectedLayer", "eyedrop"];
+    return ["gfxLoader", "selectedLayer", "eyedrop", "layerVisibility"];
   }
 }

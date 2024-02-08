@@ -518,6 +518,8 @@ export class Application extends LitElement {
         .gfxLoader=${this.gfxLoader}
         .gfxErrors=${this.gfxErrors}
         .eyedrop=${this.eyedrop}
+        .layerVisibility=${this.layerVisibility}
+        .toggleLayerVisibility=${this.toggleVisibilityFlag}
         .selectedLayer=${this.selectedLayer}
         .pointerEnabled=${this.pointerEnabled()}
         .keyboardEnabled=${this.keyboardEnabled()}
